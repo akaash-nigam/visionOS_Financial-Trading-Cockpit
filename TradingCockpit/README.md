@@ -1,6 +1,6 @@
 # Trading Cockpit - Swift Project
 
-**Version:** 0.2.0 (Sprint 2 - Market Data Pipeline)
+**Version:** 0.3.0 (Sprint 3 - 3D Visualization)
 **Platform:** visionOS 2.0+
 **Language:** Swift 6.0+
 
@@ -36,7 +36,16 @@ TradingCockpit/
 │
 ├── Features/
 │   ├── Trading/                      # Trading UI & logic
+│   │   └── Views/
+│   │       └── AuthenticationView.swift
 │   ├── Visualization/                # 3D terrain rendering
+│   │   ├── Views/
+│   │   │   └── MarketVisualizationView.swift
+│   │   ├── Engine/
+│   │   │   ├── VisualizationEngine.swift
+│   │   │   └── TerrainGenerator.swift
+│   │   └── Models/
+│   │       └── VisualizationModels.swift
 │   ├── Gestures/                     # Hand tracking & gestures
 │   └── Portfolio/                    # Portfolio views
 │
@@ -103,6 +112,33 @@ TradingCockpit/
 - [x] PolygonDataProvider with WebSocket
 - [x] Paper trading support
 
+## Sprint 3 Deliverables ✅
+
+### 3D Visualization Engine
+- [x] RealityKit scene foundation
+- [x] Grid-based terrain generation
+- [x] Color gradient system (P&L visualization)
+- [x] Profit/loss color mapping (red → yellow → green)
+- [x] Security label system with billboarding
+- [x] Camera controls (pan, rotate, zoom)
+- [x] Drag gesture for camera rotation
+- [x] Pinch gesture for zoom
+- [x] Real-time terrain updates
+- [x] Performance monitoring (FPS counter)
+- [x] Terrain animation on updates
+- [x] Grid helper for debugging
+- [x] Lighting system (directional + ambient)
+
+### Visualization Features
+- [x] MarketVisualizationView (main 3D view)
+- [x] VisualizationEngine (core rendering)
+- [x] TerrainGenerator (mesh generation)
+- [x] Position-based terrain height mapping
+- [x] Interactive position chips UI
+- [x] Toggle controls (labels, grid)
+- [x] Camera reset functionality
+- [x] Mock data system for testing
+
 ---
 
 ## Key Classes & Protocols
@@ -135,26 +171,31 @@ SQLite wrapper with core tables:
 ### Dependencies
 - **Native Frameworks**:
   - SwiftUI (UI framework)
-  - RealityKit (3D rendering) - *Sprint 3*
-  - Combine (reactive streams) - *Sprint 2*
-  - Security (Keychain)
-  - SQLite3 (database)
+  - RealityKit (3D rendering) ✅
+  - Combine (reactive streams) ✅
+  - Security (Keychain) ✅
+  - SQLite3 (database) ✅
 
 ### External Dependencies
 - None for Sprint 1 (keeping it native)
 
 ---
 
-## Next Steps (Sprint 3)
+## Next Steps (Sprint 4)
 
-### 3D Visualization Engine
-- [ ] RealityKit scene setup
-- [ ] Basic terrain generation (grid-based for MVP)
-- [ ] Color gradients for P&L
-- [ ] Security labels (billboarded text)
-- [ ] Camera controls (pan, zoom, rotate)
-- [ ] Real-time terrain updates
-- [ ] Performance optimization (60fps target)
+### Trading Execution
+- [ ] Order entry UI (market, limit, stop)
+- [ ] Order validation and preview
+- [ ] One-click trading from visualization
+- [ ] Position sizing calculator
+- [ ] Risk management controls
+
+### Enhanced Visualization
+- [ ] Connect real market data to terrain
+- [ ] Volume visualization (bar height/opacity)
+- [ ] Sector grouping and clustering
+- [ ] Historical P&L replay
+- [ ] Performance improvements (LOD, culling)
 
 ---
 
@@ -254,5 +295,5 @@ Copyright © 2025 Trading Cockpit. All rights reserved.
 
 For questions or issues, please refer to the project documentation in `/docs`.
 
-**Status**: Sprint 2 Complete ✅
-**Next Sprint**: 3D Visualization Engine
+**Status**: Sprint 3 Complete ✅
+**Next Sprint**: Trading Execution & Enhanced Visualization

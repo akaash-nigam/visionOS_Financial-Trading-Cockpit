@@ -32,77 +32,102 @@ struct ContentView: View {
     }
 }
 
-// MARK: - Main View (Placeholder for Sprint 3)
+// MARK: - Main View
 
 struct MainView: View {
     let marketDataHub: MarketDataHub?
     @Environment(AppState.self) private var appState
     @State private var authService = AuthenticationService()
+    @State private var showVisualization = false
 
     var body: some View {
-        VStack(spacing: 20) {
-            // Header
-            VStack {
-                Text("🚀 Financial Trading Cockpit")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
+        NavigationStack {
+            VStack(spacing: 20) {
+                // Header
+                VStack {
+                    Text("🚀 Financial Trading Cockpit")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
 
-                Text("Sprint 2: Market Data Pipeline Complete")
-                    .font(.title3)
-                    .foregroundStyle(.secondary)
-            }
-            .padding()
-
-            Spacer()
-
-            // Status Cards
-            VStack(spacing: 16) {
-                StatusCard(
-                    title: "Authentication",
-                    status: "Connected",
-                    icon: "checkmark.shield.fill",
-                    color: .green
-                )
-
-                StatusCard(
-                    title: "Market Data",
-                    status: "Ready",
-                    icon: "chart.line.uptrend.xyaxis",
-                    color: .blue
-                )
-
-                StatusCard(
-                    title: "3D Visualization",
-                    status: "Coming in Sprint 3",
-                    icon: "cube.fill",
-                    color: .orange
-                )
-            }
-            .padding(.horizontal)
-
-            Spacer()
-
-            // Sign Out Button
-            Button {
-                Task {
-                    try? await authService.signOut()
-                    appState.isAuthenticated = false
+                    Text("Sprint 3: 3D Visualization Complete")
+                        .font(.title3)
+                        .foregroundStyle(.secondary)
                 }
-            } label: {
-                HStack {
-                    Image(systemName: "rectangle.portrait.and.arrow.right")
-                    Text("Sign Out")
-                }
-                .font(.headline)
-                .foregroundColor(.white)
-                .frame(maxWidth: 300)
                 .padding()
-                .background(Color.red)
-                .cornerRadius(12)
+
+                Spacer()
+
+                // Status Cards
+                VStack(spacing: 16) {
+                    StatusCard(
+                        title: "Authentication",
+                        status: "Connected",
+                        icon: "checkmark.shield.fill",
+                        color: .green
+                    )
+
+                    StatusCard(
+                        title: "Market Data",
+                        status: "Ready",
+                        icon: "chart.line.uptrend.xyaxis",
+                        color: .blue
+                    )
+
+                    StatusCard(
+                        title: "3D Visualization",
+                        status: "Ready",
+                        icon: "cube.fill",
+                        color: .green
+                    )
+                }
+                .padding(.horizontal)
+
+                Spacer()
+
+                // Launch Visualization Button
+                NavigationLink(destination: MarketVisualizationView()) {
+                    HStack {
+                        Image(systemName: "play.circle.fill")
+                        Text("Launch 3D Visualization")
+                    }
+                    .font(.headline)
+                    .foregroundColor(.white)
+                    .frame(maxWidth: 400)
+                    .padding()
+                    .background(
+                        LinearGradient(
+                            colors: [.blue, .purple],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                    )
+                    .cornerRadius(12)
+                    .shadow(radius: 5)
+                }
+                .padding()
+
+                // Sign Out Button
+                Button {
+                    Task {
+                        try? await authService.signOut()
+                        appState.isAuthenticated = false
+                    }
+                } label: {
+                    HStack {
+                        Image(systemName: "rectangle.portrait.and.arrow.right")
+                        Text("Sign Out")
+                    }
+                    .font(.headline)
+                    .foregroundColor(.white)
+                    .frame(maxWidth: 300)
+                    .padding()
+                    .background(Color.red)
+                    .cornerRadius(12)
+                }
+                .padding()
             }
             .padding()
         }
-        .padding()
     }
 }
 
