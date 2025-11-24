@@ -39,6 +39,7 @@ struct MainView: View {
     @Environment(AppState.self) private var appState
     @State private var authService = AuthenticationService()
     @State private var tradingService: TradingService?
+    @State private var watchlistService: WatchlistService?
     @State private var showOrderEntry = false
 
     var body: some View {
@@ -51,7 +52,7 @@ struct MainView: View {
                             .font(.largeTitle)
                             .fontWeight(.bold)
 
-                        Text("Sprint 4: Trading Execution Complete")
+                        Text("Sprint 5: Watchlist & Search Complete")
                             .font(.title3)
                             .foregroundStyle(.secondary)
                     }
@@ -98,6 +99,17 @@ struct MainView: View {
                                 icon: "cube.fill",
                                 gradient: [.blue, .purple]
                             )
+                        }
+
+                        // Watchlist Button
+                        if let watchlist = watchlistService, let trading = tradingService {
+                            NavigationLink(destination: WatchlistView(watchlistService: watchlist, tradingService: trading)) {
+                                ActionButton(
+                                    title: "Watchlist",
+                                    icon: "star.fill",
+                                    gradient: [.yellow, .orange]
+                                )
+                            }
                         }
 
                         // Portfolio Button
@@ -170,7 +182,9 @@ struct MainView: View {
         // In production, get broker adapter from auth service
         // For now, create without adapter for UI testing
         tradingService = TradingService()
+        watchlistService = WatchlistService(marketDataHub: marketDataHub)
         Logger.info("💼 Trading service initialized")
+        Logger.info("📋 Watchlist service initialized")
     }
 }
 
