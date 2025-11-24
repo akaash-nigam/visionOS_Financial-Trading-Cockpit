@@ -1,6 +1,6 @@
 # Trading Cockpit - Swift Project
 
-**Version:** 0.1.0 (Sprint 1 - Foundation)
+**Version:** 0.2.0 (Sprint 2 - Market Data Pipeline)
 **Platform:** visionOS 2.0+
 **Language:** Swift 6.0+
 
@@ -25,7 +25,9 @@ TradingCockpit/
 │   │   └── Position.swift            # Portfolio position models
 │   │
 │   ├── Services/
-│   │   # Coming in Sprint 2: MarketDataHub, TradingEngine, etc.
+│   │   ├── WebSocketManager.swift     # WebSocket with auto-reconnect
+│   │   ├── MarketDataHub.swift        # Quote distribution hub
+│   │   └── AuthenticationService.swift # Broker authentication
 │   │
 │   └── Utilities/
 │       ├── Logger.swift              # Structured logging system
@@ -72,6 +74,35 @@ TradingCockpit/
 - [x] Database schema creation
 - [x] Secure token storage
 
+## Sprint 2 Deliverables ✅
+
+### Market Data Pipeline
+- [x] WebSocket connection manager with auto-reconnect
+- [x] Exponential backoff for reconnections
+- [x] Heartbeat monitoring (30s intervals)
+- [x] Polygon.io WebSocket integration
+- [x] Real-time quote streaming
+- [x] Market data hub with quote distribution
+- [x] LRU quote cache (1000 quotes max)
+- [x] Update prioritization (visible vs background symbols)
+- [x] AsyncStream + Combine publishers
+
+### Authentication
+- [x] Alpaca broker adapter
+- [x] API key authentication
+- [x] Account info fetching
+- [x] Position syncing
+- [x] Order submission (market & limit)
+- [x] Authentication service
+- [x] Keychain integration for credentials
+- [x] Full authentication UI with form validation
+- [x] Session restoration
+
+### Integration
+- [x] AlpacaBrokerAdapter with REST API
+- [x] PolygonDataProvider with WebSocket
+- [x] Paper trading support
+
 ---
 
 ## Key Classes & Protocols
@@ -114,19 +145,16 @@ SQLite wrapper with core tables:
 
 ---
 
-## Next Steps (Sprint 2)
+## Next Steps (Sprint 3)
 
-### Market Data Pipeline
-- [ ] WebSocket connection manager
-- [ ] Polygon.io API integration
-- [ ] Market data hub with quote distribution
-- [ ] LRU quote cache
-- [ ] Data throttling system
-
-### Authentication
-- [ ] Alpaca OAuth 2.0 implementation
-- [ ] Token refresh logic
-- [ ] Authentication UI flow
+### 3D Visualization Engine
+- [ ] RealityKit scene setup
+- [ ] Basic terrain generation (grid-based for MVP)
+- [ ] Color gradients for P&L
+- [ ] Security labels (billboarded text)
+- [ ] Camera controls (pan, zoom, rotate)
+- [ ] Real-time terrain updates
+- [ ] Performance optimization (60fps target)
 
 ---
 
@@ -226,5 +254,5 @@ Copyright © 2025 Trading Cockpit. All rights reserved.
 
 For questions or issues, please refer to the project documentation in `/docs`.
 
-**Status**: Sprint 1 Complete ✅
-**Next Sprint**: Market Data Pipeline & Authentication
+**Status**: Sprint 2 Complete ✅
+**Next Sprint**: 3D Visualization Engine

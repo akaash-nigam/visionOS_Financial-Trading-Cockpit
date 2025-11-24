@@ -9,87 +9,135 @@ import SwiftUI
 
 struct ContentView: View {
     @Environment(AppState.self) private var appState
+    @State private var marketDataHub: MarketDataHub?
 
     var body: some View {
         Group {
             if appState.isAuthenticated {
-                MainView()
+                MainView(marketDataHub: marketDataHub)
             } else {
                 AuthenticationView()
             }
         }
+        .task {
+            await setupMarketData()
+        }
+    }
+
+    private func setupMarketData() async {
+        // Initialize market data hub (will be used in Sprint 3)
+        // For now, create with test provider
+        marketDataHub = MarketDataHub.createForTesting()
+        Logger.debug("📊 Market Data Hub created")
     }
 }
 
-// MARK: - Main View (Placeholder)
+// MARK: - Main View (Placeholder for Sprint 3)
 
 struct MainView: View {
-    var body: some View {
-        VStack {
-            Text("🚀 Financial Trading Cockpit")
-                .font(.largeTitle)
-                .padding()
-
-            Text("3D Market Visualization")
-                .font(.title2)
-                .foregroundStyle(.secondary)
-
-            Spacer()
-
-            Text("Ready to trade!")
-                .font(.headline)
-                .foregroundStyle(.green)
-
-            Spacer()
-        }
-        .padding()
-    }
-}
-
-// MARK: - Authentication View (Placeholder)
-
-struct AuthenticationView: View {
+    let marketDataHub: MarketDataHub?
     @Environment(AppState.self) private var appState
+    @State private var authService = AuthenticationService()
 
     var body: some View {
-        VStack(spacing: 30) {
-            Image(systemName: "chart.line.uptrend.xyaxis")
-                .font(.system(size: 80))
-                .foregroundStyle(.blue)
+        VStack(spacing: 20) {
+            // Header
+            VStack {
+                Text("🚀 Financial Trading Cockpit")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
 
-            Text("Financial Trading Cockpit")
-                .font(.largeTitle)
-                .fontWeight(.bold)
+                Text("Sprint 2: Market Data Pipeline Complete")
+                    .font(.title3)
+                    .foregroundStyle(.secondary)
+            }
+            .padding()
 
-            Text("Connect your brokerage account to start trading")
-                .font(.body)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal)
+            Spacer()
 
+            // Status Cards
+            VStack(spacing: 16) {
+                StatusCard(
+                    title: "Authentication",
+                    status: "Connected",
+                    icon: "checkmark.shield.fill",
+                    color: .green
+                )
+
+                StatusCard(
+                    title: "Market Data",
+                    status: "Ready",
+                    icon: "chart.line.uptrend.xyaxis",
+                    color: .blue
+                )
+
+                StatusCard(
+                    title: "3D Visualization",
+                    status: "Coming in Sprint 3",
+                    icon: "cube.fill",
+                    color: .orange
+                )
+            }
+            .padding(.horizontal)
+
+            Spacer()
+
+            // Sign Out Button
             Button {
-                // TODO: Implement authentication
-                Logger.info("🔐 Sign In button tapped")
-                // For now, just set authenticated to true for testing
-                appState.isAuthenticated = true
+                Task {
+                    try? await authService.signOut()
+                    appState.isAuthenticated = false
+                }
             } label: {
                 HStack {
-                    Image(systemName: "lock.shield")
-                    Text("Sign In with Alpaca")
+                    Image(systemName: "rectangle.portrait.and.arrow.right")
+                    Text("Sign Out")
                 }
                 .font(.headline)
                 .foregroundColor(.white)
                 .frame(maxWidth: 300)
                 .padding()
-                .background(Color.blue)
+                .background(Color.red)
                 .cornerRadius(12)
             }
-
-            Text("Paper trading mode available")
-                .font(.caption)
-                .foregroundStyle(.secondary)
+            .padding()
         }
         .padding()
+    }
+}
+
+// MARK: - Status Card
+
+struct StatusCard: View {
+    let title: String
+    let status: String
+    let icon: String
+    let color: Color
+
+    var body: some View {
+        HStack {
+            Image(systemName: icon)
+                .font(.title2)
+                .foregroundStyle(color)
+                .frame(width: 40)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(.headline)
+
+                Text(status)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer()
+
+            Image(systemName: "checkmark.circle.fill")
+                .foregroundStyle(color)
+        }
+        .padding()
+        .background(Color(.systemGray6))
+        .cornerRadius(12)
     }
 }
 
