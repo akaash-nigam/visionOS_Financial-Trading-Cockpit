@@ -1,6 +1,6 @@
 # Trading Cockpit - Swift Project
 
-**Version:** 0.3.0 (Sprint 3 - 3D Visualization)
+**Version:** 0.4.0 (Sprint 4 - Trading Execution)
 **Platform:** visionOS 2.0+
 **Language:** Swift 6.0+
 
@@ -36,8 +36,15 @@ TradingCockpit/
 │
 ├── Features/
 │   ├── Trading/                      # Trading UI & logic
-│   │   └── Views/
-│   │       └── AuthenticationView.swift
+│   │   ├── Views/
+│   │   │   ├── AuthenticationView.swift
+│   │   │   ├── OrderEntryView.swift
+│   │   │   ├── OrderConfirmationView.swift
+│   │   │   └── OrderStatusView.swift
+│   │   ├── Services/
+│   │   │   └── TradingService.swift
+│   │   └── Models/
+│   │       └── OrderModels.swift
 │   ├── Visualization/                # 3D terrain rendering
 │   │   ├── Views/
 │   │   │   └── MarketVisualizationView.swift
@@ -48,6 +55,8 @@ TradingCockpit/
 │   │       └── VisualizationModels.swift
 │   ├── Gestures/                     # Hand tracking & gestures
 │   └── Portfolio/                    # Portfolio views
+│       └── Views/
+│           └── PortfolioView.swift
 │
 ├── Integration/
 │   ├── Brokers/                      # Broker API adapters
@@ -139,6 +148,41 @@ TradingCockpit/
 - [x] Camera reset functionality
 - [x] Mock data system for testing
 
+## Sprint 4 Deliverables ✅
+
+### Trading Execution
+- [x] Order entry UI (market & limit orders)
+- [x] Order validation system
+- [x] Order confirmation dialog
+- [x] TradingService for order management
+- [x] Order submission to broker
+- [x] Order status tracking
+- [x] Active orders view
+- [x] Order history view
+- [x] Order cancellation
+- [x] Position sizing calculator
+
+### Portfolio Management
+- [x] PortfolioView with account summary
+- [x] Position display with P&L
+- [x] Account balance tracking
+- [x] Buying power display
+- [x] Position-level P&L calculations
+- [x] Portfolio-level P&L aggregation
+- [x] Interactive position cards
+
+### Trading Features
+- [x] OrderEntryView with validation
+- [x] OrderConfirmationView with details
+- [x] OrderStatusView with active/history tabs
+- [x] Market/Limit order types
+- [x] Buy/Sell side selection
+- [x] Quantity slider and quick buttons
+- [x] Estimated cost calculations
+- [x] Buying power validation
+- [x] Real-time order updates
+- [x] Order cancellation flow
+
 ---
 
 ## Key Classes & Protocols
@@ -181,21 +225,28 @@ SQLite wrapper with core tables:
 
 ---
 
-## Next Steps (Sprint 4)
+## Next Steps (Sprint 5 & Beyond)
 
-### Trading Execution
-- [ ] Order entry UI (market, limit, stop)
-- [ ] Order validation and preview
-- [ ] One-click trading from visualization
-- [ ] Position sizing calculator
-- [ ] Risk management controls
+### Gesture Controls
+- [ ] Hand tracking setup with ARKit
+- [ ] Pinch to select security
+- [ ] Drag to adjust order quantity
+- [ ] Gesture-based trading workflow
+- [ ] Voice command integration
 
-### Enhanced Visualization
-- [ ] Connect real market data to terrain
-- [ ] Volume visualization (bar height/opacity)
-- [ ] Sector grouping and clustering
+### Enhanced Features
+- [ ] Watchlist management
+- [ ] Symbol search functionality
+- [ ] Real-time news integration
+- [ ] Price alerts and notifications
+- [ ] Risk management dashboard
+
+### Performance & Polish
+- [ ] Level-of-detail (LOD) system
+- [ ] Frustum culling optimization
+- [ ] Sector grouping in visualization
 - [ ] Historical P&L replay
-- [ ] Performance improvements (LOD, culling)
+- [ ] Advanced charting tools
 
 ---
 
@@ -295,5 +346,16 @@ Copyright © 2025 Trading Cockpit. All rights reserved.
 
 For questions or issues, please refer to the project documentation in `/docs`.
 
-**Status**: Sprint 3 Complete ✅
-**Next Sprint**: Trading Execution & Enhanced Visualization
+**Status**: Sprint 4 Complete ✅
+**Next Sprint**: Gesture Controls & Enhanced Features
+
+---
+
+## Sprint Summary
+
+- **Sprint 1**: Foundation & Infrastructure ✅
+- **Sprint 2**: Market Data Pipeline & Authentication ✅
+- **Sprint 3**: 3D Visualization Engine ✅
+- **Sprint 4**: Trading Execution & Portfolio Management ✅
+
+**MVP Progress**: ~70% complete (4 of 5 core epics delivered)
