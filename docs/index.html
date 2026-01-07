@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="hero-ref" content="1">
+    <title>Financial Trading Cockpit - Spatial Market Intelligence | Vision Pro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bull-green: #22c55e;
+            --bear-red: #ef4444;
+            --terminal-blue: #0ea5e9;
+            --gold: #f59e0b;
+            --terminal-dark: #0a0f14;
+            --grid-color: rgba(14, 165, 233, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--terminal-dark);
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+
+        /* Terminal Grid Background */
+        .terminal-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Ticker Tape Animation */
+        .ticker-tape {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 40px;
+            background: rgba(10, 15, 20, 0.95);
+            border-bottom: 1px solid rgba(14, 165, 233, 0.3);
+            display: flex;
+            align-items: center;
+            z-index: 100;
+            animation: tickerScroll 30s linear infinite;
+        }
+
+        @keyframes tickerScroll {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+
+        .ticker-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0 30px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        .ticker-symbol {
+            color: white;
+            font-weight: 600;
+        }
+
+        .ticker-price {
+            color: var(--terminal-blue);
+        }
+
+        .ticker-change.up {
+            color: var(--bull-green);
+        }
+
+        .ticker-change.down {
+            color: var(--bear-red);
+        }
+
+        /* Live Indicator */
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--bull-green);
+            border-radius: 50%;
+            animation: livePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes livePulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 10px var(--bull-green); }
+            50% { opacity: 0.5; box-shadow: 0 0 5px var(--bull-green); }
+        }
+
+        /* Candlestick Pulse Animation */
+        @keyframes candlePulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            background: linear-gradient(180deg, rgba(10, 15, 20, 0.8) 0%, var(--terminal-dark) 100%),
+                        url('hero-spatial.png') center/cover no-repeat;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 80px 20px 60px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .market-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(34, 197, 94, 0.15);
+            border: 1px solid var(--bull-green);
+            padding: 10px 24px;
+            border-radius: 4px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--bull-green);
+            margin-bottom: 30px;
+        }
+
+        .logo-container {
+            margin-bottom: 30px;
+        }
+
+        .logo-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(239, 68, 68, 0.2) 100%);
+            border: 2px solid var(--terminal-blue);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+        }
+
+        h1 {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 64px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, #ffffff 0%, var(--terminal-blue) 50%, var(--bull-green) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+
+        .tagline {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 22px;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 30px;
+        }
+
+        .hero-description {
+            font-size: 18px;
+            max-width: 700px;
+            line-height: 1.8;
+            color: rgba(226, 232, 240, 0.85);
+            margin-bottom: 40px;
+        }
+
+        /* CTA Buttons */
+        .cta-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 50px;
+        }
+
+        .cta-primary {
+            background: var(--bull-green);
+            color: white;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 18px 40px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .cta-primary:hover {
+            background: #16a34a;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(34, 197, 94, 0.3);
+        }
+
+        .cta-secondary {
+            background: transparent;
+            color: var(--terminal-blue);
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 18px 40px;
+            border: 2px solid var(--terminal-blue);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .cta-secondary:hover {
+            background: rgba(14, 165, 233, 0.2);
+        }
+
+        /* Market Stats Bar */
+        .market-stats {
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 30px 40px;
+            background: rgba(10, 15, 20, 0.9);
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            border-radius: 8px;
+        }
+
+        .stat-item {
+            text-align: center;
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            display: block;
+        }
+
+        .stat-value.green { color: var(--bull-green); }
+        .stat-value.blue { color: var(--terminal-blue); }
+        .stat-value.gold { color: var(--gold); }
+
+        .stat-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: rgba(226, 232, 240, 0.6);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Section */
+        .section {
+            padding: 100px 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-tag {
+            display: inline-block;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 13px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 15px;
+        }
+
+        .section-title {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 42px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: white;
+        }
+
+        /* Asset Classes Grid */
+        .assets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .asset-card {
+            background: rgba(10, 15, 20, 0.8);
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            border-radius: 8px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .asset-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--bull-green), var(--terminal-blue));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
+        .asset-card:hover {
+            border-color: var(--terminal-blue);
+            transform: translateY(-5px);
+        }
+
+        .asset-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .asset-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .asset-icon {
+            font-size: 36px;
+        }
+
+        .asset-badge {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 4px 10px;
+            border-radius: 4px;
+            background: rgba(34, 197, 94, 0.2);
+            color: var(--bull-green);
+        }
+
+        .asset-name {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 20px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .asset-desc {
+            font-size: 14px;
+            color: rgba(226, 232, 240, 0.7);
+            line-height: 1.6;
+        }
+
+        /* Trading Tools */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .tool-card {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.1) 0%, rgba(10, 15, 20, 0.9) 100%);
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            border-radius: 8px;
+            padding: 35px;
+            display: flex;
+            gap: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .tool-card:hover {
+            border-color: var(--terminal-blue);
+            box-shadow: 0 10px 40px rgba(14, 165, 233, 0.2);
+        }
+
+        .tool-icon {
+            font-size: 40px;
+            flex-shrink: 0;
+        }
+
+        .tool-content h3 {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--terminal-blue);
+            margin-bottom: 10px;
+        }
+
+        .tool-content p {
+            font-size: 15px;
+            color: rgba(226, 232, 240, 0.7);
+            line-height: 1.6;
+        }
+
+        /* AI Signals Section */
+        .ai-section {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(10, 15, 20, 0.95) 100%);
+            border-top: 1px solid rgba(34, 197, 94, 0.3);
+            border-bottom: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .signals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .signal-card {
+            background: rgba(10, 15, 20, 0.8);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            border-radius: 8px;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .signal-icon {
+            font-size: 36px;
+            margin-bottom: 15px;
+        }
+
+        .signal-name {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .signal-desc {
+            font-size: 13px;
+            color: rgba(226, 232, 240, 0.6);
+        }
+
+        /* Performance Metrics */
+        .metrics-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+        }
+
+        .metric-card {
+            background: rgba(10, 15, 20, 0.8);
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 42px;
+            font-weight: 700;
+            color: var(--bull-green);
+            margin-bottom: 10px;
+        }
+
+        .metric-label {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(226, 232, 240, 0.6);
+        }
+
+        /* Requirements */
+        .requirements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            background: rgba(10, 15, 20, 0.8);
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            border-radius: 8px;
+            padding: 40px;
+        }
+
+        .req-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .req-icon {
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .req-content h4 {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--terminal-blue);
+            margin-bottom: 4px;
+        }
+
+        .req-content p {
+            font-size: 13px;
+            color: rgba(226, 232, 240, 0.7);
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(10, 15, 20, 0.95);
+            border-top: 1px solid rgba(14, 165, 233, 0.2);
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .footer-logo {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--terminal-blue);
+            margin-bottom: 20px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .footer-link {
+            color: rgba(226, 232, 240, 0.6);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+
+        .footer-link:hover {
+            color: var(--terminal-blue);
+        }
+
+        .footer-copy {
+            font-size: 13px;
+            color: rgba(226, 232, 240, 0.5);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 40px;
+            }
+
+            .tagline {
+                font-size: 16px;
+                letter-spacing: 2px;
+            }
+
+            .section-title {
+                font-size: 32px;
+            }
+
+            .metrics-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .market-stats {
+                gap: 20px;
+            }
+
+            .ticker-tape {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Ticker Tape -->
+    <div class="ticker-tape">
+        <div class="ticker-item">
+            <span class="ticker-symbol">AAPL</span>
+            <span class="ticker-price">$198.45</span>
+            <span class="ticker-change up">+2.34%</span>
+        </div>
+        <div class="ticker-item">
+            <span class="ticker-symbol">GOOGL</span>
+            <span class="ticker-price">$142.67</span>
+            <span class="ticker-change up">+1.12%</span>
+        </div>
+        <div class="ticker-item">
+            <span class="ticker-symbol">MSFT</span>
+            <span class="ticker-price">$378.91</span>
+            <span class="ticker-change down">-0.45%</span>
+        </div>
+        <div class="ticker-item">
+            <span class="ticker-symbol">TSLA</span>
+            <span class="ticker-price">$245.23</span>
+            <span class="ticker-change up">+3.78%</span>
+        </div>
+        <div class="ticker-item">
+            <span class="ticker-symbol">BTC</span>
+            <span class="ticker-price">$67,234</span>
+            <span class="ticker-change up">+5.21%</span>
+        </div>
+        <div class="ticker-item">
+            <span class="ticker-symbol">ETH</span>
+            <span class="ticker-price">$3,456</span>
+            <span class="ticker-change down">-1.23%</span>
+        </div>
+        <div class="ticker-item">
+            <span class="ticker-symbol">SPY</span>
+            <span class="ticker-price">$512.45</span>
+            <span class="ticker-change up">+0.89%</span>
+        </div>
+        <div class="ticker-item">
+            <span class="ticker-symbol">NVDA</span>
+            <span class="ticker-price">$892.34</span>
+            <span class="ticker-change up">+4.56%</span>
+        </div>
+        <div class="ticker-item">
+            <span class="ticker-symbol">AAPL</span>
+            <span class="ticker-price">$198.45</span>
+            <span class="ticker-change up">+2.34%</span>
+        </div>
+        <div class="ticker-item">
+            <span class="ticker-symbol">GOOGL</span>
+            <span class="ticker-price">$142.67</span>
+            <span class="ticker-change up">+1.12%</span>
+        </div>
+        <div class="ticker-item">
+            <span class="ticker-symbol">MSFT</span>
+            <span class="ticker-price">$378.91</span>
+            <span class="ticker-change down">-0.45%</span>
+        </div>
+        <div class="ticker-item">
+            <span class="ticker-symbol">TSLA</span>
+            <span class="ticker-price">$245.23</span>
+            <span class="ticker-change up">+3.78%</span>
+        </div>
+    </div>
+
+    <!-- Background -->
+    <div class="terminal-grid"></div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="market-status">
+            <span class="live-dot"></span>
+            Markets Open • Live Data
+        </div>
+
+        <div class="logo-container">
+            <div class="logo-icon">📈</div>
+        </div>
+
+        <h1>Financial Trading<br>Cockpit</h1>
+        <p class="tagline">Spatial Market Intelligence</p>
+        <p class="hero-description">
+            Immerse yourself in 3D market data visualization. Trade across global markets with real-time analytics, AI-powered signals, and institutional-grade tools—all in spatial reality on Apple Vision Pro.
+        </p>
+
+        <div class="cta-group">
+            <a href="#" class="cta-primary">Start Trading - $29.99/mo</a>
+            <a href="#" class="cta-secondary">Request Demo</a>
+        </div>
+
+        <div class="market-stats">
+            <div class="stat-item">
+                <span class="stat-value green">&lt;1ms</span>
+                <span class="stat-label">Latency</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value blue">100+</span>
+                <span class="stat-label">Markets</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value gold">50K+</span>
+                <span class="stat-label">Assets</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value green">24/7</span>
+                <span class="stat-label">Trading</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value blue">AI</span>
+                <span class="stat-label">Signals</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Asset Classes -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">// Asset Classes</span>
+                <h2 class="section-title">Trade Everything</h2>
+            </div>
+
+            <div class="assets-grid">
+                <div class="asset-card">
+                    <div class="asset-header">
+                        <span class="asset-icon">📊</span>
+                        <span class="asset-badge">Live</span>
+                    </div>
+                    <h3 class="asset-name">Equities</h3>
+                    <p class="asset-desc">Trade stocks from NYSE, NASDAQ, LSE, TSE, and 50+ global exchanges with real-time Level 2 data.</p>
+                </div>
+
+                <div class="asset-card">
+                    <div class="asset-header">
+                        <span class="asset-icon">💱</span>
+                        <span class="asset-badge">24/7</span>
+                    </div>
+                    <h3 class="asset-name">Forex</h3>
+                    <p class="asset-desc">Access 180+ currency pairs with institutional spreads and multi-timeframe analysis.</p>
+                </div>
+
+                <div class="asset-card">
+                    <div class="asset-header">
+                        <span class="asset-icon">₿</span>
+                        <span class="asset-badge">Live</span>
+                    </div>
+                    <h3 class="asset-name">Crypto</h3>
+                    <p class="asset-desc">Trade Bitcoin, Ethereum, and 500+ cryptocurrencies across major exchanges.</p>
+                </div>
+
+                <div class="asset-card">
+                    <div class="asset-header">
+                        <span class="asset-icon">🛢️</span>
+                        <span class="asset-badge">Futures</span>
+                    </div>
+                    <h3 class="asset-name">Commodities</h3>
+                    <p class="asset-desc">Oil, gold, silver, agricultural products, and more with futures and spot trading.</p>
+                </div>
+
+                <div class="asset-card">
+                    <div class="asset-header">
+                        <span class="asset-icon">📈</span>
+                        <span class="asset-badge">Options</span>
+                    </div>
+                    <h3 class="asset-name">Derivatives</h3>
+                    <p class="asset-desc">Options chains, futures contracts, and structured products with Greeks visualization.</p>
+                </div>
+
+                <div class="asset-card">
+                    <div class="asset-header">
+                        <span class="asset-icon">🏛️</span>
+                        <span class="asset-badge">Bonds</span>
+                    </div>
+                    <h3 class="asset-name">Fixed Income</h3>
+                    <p class="asset-desc">Government bonds, corporate debt, and yield curve analysis in 3D space.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trading Tools -->
+    <section class="section" style="background: rgba(14, 165, 233, 0.03);">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">// Trading Tools</span>
+                <h2 class="section-title">Professional Grade</h2>
+            </div>
+
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <div class="tool-icon">🎯</div>
+                    <div class="tool-content">
+                        <h3>3D Order Flow</h3>
+                        <p>Visualize market depth, order book imbalances, and institutional activity in spatial layers.</p>
+                    </div>
+                </div>
+
+                <div class="tool-card">
+                    <div class="tool-icon">📉</div>
+                    <div class="tool-content">
+                        <h3>Technical Analysis</h3>
+                        <p>100+ indicators, custom scripts, and pattern recognition with 3D candlestick charts.</p>
+                    </div>
+                </div>
+
+                <div class="tool-card">
+                    <div class="tool-icon">⚡</div>
+                    <div class="tool-content">
+                        <h3>One-Click Trading</h3>
+                        <p>Execute trades instantly with gesture controls. Set stops and targets in 3D space.</p>
+                    </div>
+                </div>
+
+                <div class="tool-card">
+                    <div class="tool-icon">📊</div>
+                    <div class="tool-content">
+                        <h3>Portfolio Analytics</h3>
+                        <p>Real-time P&L, risk metrics, sector exposure, and correlation analysis visualized spatially.</p>
+                    </div>
+                </div>
+
+                <div class="tool-card">
+                    <div class="tool-icon">🔔</div>
+                    <div class="tool-content">
+                        <h3>Smart Alerts</h3>
+                        <p>Price alerts, technical signals, and news events delivered as spatial notifications.</p>
+                    </div>
+                </div>
+
+                <div class="tool-card">
+                    <div class="tool-icon">📰</div>
+                    <div class="tool-content">
+                        <h3>Market News</h3>
+                        <p>Real-time news feeds, earnings calendars, and economic events with sentiment analysis.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Signals -->
+    <section class="section ai-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">// AI-Powered</span>
+                <h2 class="section-title">Intelligent Signals</h2>
+            </div>
+
+            <div class="signals-grid">
+                <div class="signal-card">
+                    <div class="signal-icon">🤖</div>
+                    <h3 class="signal-name">Pattern Recognition</h3>
+                    <p class="signal-desc">ML models identify chart patterns in real-time</p>
+                </div>
+
+                <div class="signal-card">
+                    <div class="signal-icon">📊</div>
+                    <h3 class="signal-name">Trend Analysis</h3>
+                    <p class="signal-desc">Multi-timeframe trend strength scoring</p>
+                </div>
+
+                <div class="signal-card">
+                    <div class="signal-icon">💡</div>
+                    <h3 class="signal-name">Entry/Exit Signals</h3>
+                    <p class="signal-desc">AI-generated trade recommendations</p>
+                </div>
+
+                <div class="signal-card">
+                    <div class="signal-icon">📈</div>
+                    <h3 class="signal-name">Momentum Scoring</h3>
+                    <p class="signal-desc">Relative strength across sectors</p>
+                </div>
+
+                <div class="signal-card">
+                    <div class="signal-icon">🎯</div>
+                    <h3 class="signal-name">Price Targets</h3>
+                    <p class="signal-desc">ML-predicted support and resistance</p>
+                </div>
+
+                <div class="signal-card">
+                    <div class="signal-icon">⚠️</div>
+                    <h3 class="signal-name">Risk Alerts</h3>
+                    <p class="signal-desc">Anomaly detection and risk warnings</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Performance Metrics -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">// Performance</span>
+                <h2 class="section-title">Platform Metrics</h2>
+            </div>
+
+            <div class="metrics-container">
+                <div class="metric-card">
+                    <div class="metric-value">&lt;1ms</div>
+                    <div class="metric-label">Order Latency</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-value">99.99%</div>
+                    <div class="metric-label">Uptime</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-value">$2T+</div>
+                    <div class="metric-label">Daily Volume</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-value">120fps</div>
+                    <div class="metric-label">Refresh Rate</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Requirements -->
+    <section class="section" style="background: rgba(14, 165, 233, 0.03);">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">// Requirements</span>
+                <h2 class="section-title">System Specs</h2>
+            </div>
+
+            <div class="requirements-grid">
+                <div class="req-item">
+                    <div class="req-icon">📱</div>
+                    <div class="req-content">
+                        <h4>Device</h4>
+                        <p>Apple Vision Pro</p>
+                    </div>
+                </div>
+                <div class="req-item">
+                    <div class="req-icon">💾</div>
+                    <div class="req-content">
+                        <h4>Storage</h4>
+                        <p>2.5 GB available</p>
+                    </div>
+                </div>
+                <div class="req-item">
+                    <div class="req-icon">🌐</div>
+                    <div class="req-content">
+                        <h4>Connection</h4>
+                        <p>High-speed internet required</p>
+                    </div>
+                </div>
+                <div class="req-item">
+                    <div class="req-icon">🔐</div>
+                    <div class="req-content">
+                        <h4>Security</h4>
+                        <p>Bank-grade encryption</p>
+                    </div>
+                </div>
+                <div class="req-item">
+                    <div class="req-icon">📊</div>
+                    <div class="req-content">
+                        <h4>Data</h4>
+                        <p>Real-time market feeds included</p>
+                    </div>
+                </div>
+                <div class="req-item">
+                    <div class="req-icon">🏦</div>
+                    <div class="req-content">
+                        <h4>Brokerage</h4>
+                        <p>Connect your existing broker</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-logo">Financial Trading Cockpit</div>
+        <div class="footer-links">
+            <a href="#" class="footer-link">Privacy Policy</a>
+            <a href="#" class="footer-link">Terms of Service</a>
+            <a href="#" class="footer-link">Risk Disclosure</a>
+            <a href="#" class="footer-link">Support</a>
+        </div>
+        <p class="footer-copy">&copy; 2025 Financial Trading Cockpit. Trading involves risk. Spatial trading for Apple Vision Pro.</p>
+    </footer>
+</body>
+</html>

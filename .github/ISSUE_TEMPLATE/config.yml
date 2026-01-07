@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Discussion Forum
+    url: https://github.com/OWNER/REPO/discussions
+    about: Ask questions and discuss ideas with the community
+  - name: 📖 Documentation
+    url: https://github.com/OWNER/REPO/tree/main/docs
+    about: Read the comprehensive documentation
+  - name: 🔒 Security Vulnerability
+    url: mailto:security@tradingcockpit.com
+    about: Report security vulnerabilities privately
